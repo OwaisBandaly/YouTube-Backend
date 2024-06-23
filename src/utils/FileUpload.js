@@ -10,17 +10,17 @@ cloudinary.config({
 const uploadOnCloudinary = async (filePath) => {
     try {
         if(!filePath) {
-            throw new Error('File path is required')
+           return null;
         }
         //uplaod file on cloudinary
     const response = await cloudinary.uploader.upload(filePath, {
             resource_type: "auto"
         })
-        console.log("File uploaded successfully!", response.url)
-        return response
+        // console.log("File uploaded successfully!", response.url)
+        fs.unlinkSync(filePath)
+        return response;
 
     } catch (error) {
-        console.error("Error uplaoding File:", error);
         fs.unlinkSync(filePath)
         return null;
     }
