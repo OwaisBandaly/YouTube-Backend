@@ -1,10 +1,65 @@
-import mongoose, { isValidObjectId } from "mongoose";
+import mongoose from "mongoose";
 import { Video } from "../models/video.model.js";
-import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import uploadOnCloudinary from "../utils/FileUpload.js";
+
+const getAllVideos = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
+
+  let pageNumber = parseInt(page);
+  let pageSize = parseInt(limit);
+
+  if (isNaN(pageNumber) || pageNumber < 1) {
+    throw new ApiError(400, "Invalid page number");
+  }
+  if (isNaN(pageSize) || pageSize < 1) {
+    throw new ApiError(400, "Invalid limit");
+  }
+
+  let filter = {};
+  if (query) {
+    filter = {
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { description: { $regex: query, $options: "i" } },
+      ],
+    };
+  }
+
+  if (userId) {
+    if (mongoose.isValidObjectId(userId)) {
+      filter.owner = userId;
+    } else {
+      return res.status(400).json({ message: "Invalid userId format" });
+    }
+  }
+
+  const sort = {};
+  if (sortBy) {
+    sort[sortBy] = sortType === "asc" ? 1 : -1;
+  }
+
+  const videos = await Video.find(filter)
+    .sort(sort)
+    .skip((pageNumber - 1) * pageSize)
+    .limit(pageSize);
+
+  if (!videos) {
+    throw new ApiError(500, "Error while fetching videos");
+  }
+
+  const videoCount = await Video.countDocuments(filter);
+
+  if (videoCount === 0) {
+    return res.status(404).json({ message: "No videos found" });
+  }
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, { videos, videoCount }, "videos fetched"));
+});
 
 const publishAVideo = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
@@ -49,6 +104,10 @@ const publishAVideo = asyncHandler(async (req, res) => {
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
 
+  if (!mongoose.isValidObjectId(videoId)) {
+    return res.status(400).json({ message: "Invalid userId format" });
+  }
+
   try {
     const video = await Video.findById(videoId);
 
@@ -58,11 +117,7 @@ const getVideoById = asyncHandler(async (req, res) => {
 
     res.status(200).json(new ApiResponse(200, video, "Video fetched"));
   } catch (error) {
-    res.status(500);
-    throw new ApiError(
-      500,
-      "Error retrieving video: *either videoId is invalid or video file is deleted*"
-    );
+    return res.status(404).json({ message: "Video not found" });
   }
 });
 
@@ -70,6 +125,10 @@ const updateVideo = asyncHandler(async (req, res) => {
   //update video details like title, description, thumbnail
   const { videoId } = req.params;
   const { title, description } = req.body;
+
+  if (!mongoose.isValidObjectId(videoId)) {
+    return res.status(400).json({ message: "Invalid userId format" });
+  }
 
   if (!title || !description) {
     throw new ApiError(400, "Title & description is required");
@@ -104,10 +163,7 @@ const updateVideo = asyncHandler(async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, video, "Details updated successfully"));
   } catch (error) {
-    throw new ApiError(
-      500,
-      "Error updating video: *either videoId is invalid or video file is deleted*"
-    );
+    return res.status(404).json({ message: "Video not found" });
   }
 });
 
@@ -149,4 +205,5 @@ export {
   updateVideo,
   deleteVideo,
   togglePublishStatus,
+  getAllVideos,
 };
