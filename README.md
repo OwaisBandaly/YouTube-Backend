@@ -8,9 +8,11 @@ Welcome to the YouTube Backend Project! This repository contains a complete back
 - **JavaScript** - The primary programming language used.
 - **Node.js** - JavaScript runtime for building the server.
 - **Express** - Web application framework for Node.js.
-- **MongoDB** - NoSQL database for storing data.
+- **MongoDB Atlas** - Cloud-based NoSQL database for storing data
 - **Mongoose** - ODM (Object Data Modeling) library for MongoDB and Node.js.
 - **Postman** - API testing tool used for testing endpoints.
+- **Multer** - Middleware for handling file uploads.
+- **Cloudinary** - Cloud service for storing images and media.
 
 ## Features
 
@@ -21,14 +23,14 @@ Welcome to the YouTube Backend Project! This repository contains a complete back
 - **Likes**: Like and unlike videos.
 - **Channel Statistics**: Get statistics for user channels.
 - **User Dashboard**: View and manage user-specific data.
+- **Avatar and Cover Images**: Upload and manage user avatar and cover images using Multer and Cloudinary.
 
 ## Controllers
 
-- **User Controller**: Manages user-related operations such as registration and authentication.
+- **User Controller**: Manages user-related operations such as registration, authentication, and profile updates (including avatar and cover images).
 - **Video Controller**: Handles operations related to videos, including uploading and updating.
 - **Subscription Controller**: Manages user subscriptions.
 - **Playlist Controller**: Manages playlists, including creation and updates.
-- **Tweet Controller**: (If applicable) Manages tweet-like functionality (if part of extended features).
 - **Likes Controller**: Handles liking and unliking of videos.
 - **Comment Controller**: Manages comments on videos.
 - **User Dashboard Controller**: Provides user-specific statistics and data.
