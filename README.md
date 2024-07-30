@@ -2,12 +2,6 @@
 
 Welcome to the YouTube Backend Project! This repository contains a complete backend system for a YouTube-like application, built using modern technologies and practices. It provides functionality for user authentication, video management, playlists, comments, likes, and more.
 
-## Table of Contents
-
-- [Technologies Used](#technologies-used)
-- [Features](#features)
-- [Controllers](#controllers)
-- [Acknowledgements](#acknowledgements)
 
 ## Technologies Used
 
