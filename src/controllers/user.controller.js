@@ -23,7 +23,6 @@ const genrateAccessAndRefreshTokens = async (userId) => {
   }
 };
 
-//REGISTER USER
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, username, password } = req.body; //get user details
 
@@ -90,7 +89,6 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, "User created successfully"));
 });
 
-//LOGIN USER
 const loginUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
 
@@ -134,7 +132,6 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-//LOGOUT USER
 const logoutUser = asyncHandler(async (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
@@ -268,7 +265,13 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "Avatar image updated successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        { url: avatar.url, FileName: avatar.original_filename },
+        "Avatar image updated successfully"
+      )
+    );
 });
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
@@ -296,7 +299,13 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "Cover image updated successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        { url: coverImage.url, FileName: coverImage.original_filename },
+        "Cover image updated successfully"
+      )
+    );
 });
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
