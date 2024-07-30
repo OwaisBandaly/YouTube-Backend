@@ -32,7 +32,6 @@ Welcome to the YouTube Backend Project! This repository contains a complete back
 - **Likes Controller**: Handles liking and unliking of videos.
 - **Comment Controller**: Manages comments on videos.
 - **User Dashboard Controller**: Provides user-specific statistics and data.
-- 
 
 ## Acknowledgements
 
